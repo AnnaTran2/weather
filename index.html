@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For a Better World</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .weather, .clothing, .color-picker {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .color-display {
+            height: 100px;
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Melbourne Weather & Outfit Suggestions</h1>
+
+    <div class="weather">
+        <h2>Current Weather in Melbourne</h2>
+        <p id="weather-info">Loading weather...</p>
+    </div>
+
+    <div class="clothing">
+        <h2>What to Wear</h2>
+        <p id="clothing-suggestion">Loading clothing suggestion...</p>
+    </div>
+
+    <div class="color-picker">
+        <h2>Random Color Inspiration</h2>
+        <button id="color-button">Pick a Color</button>
+        <div id="color-display" class="color-display"></div>
+    </div>
+
+    <script>
+        // Function to fetch weather data from BOM
+        async function getWeather() {
+            const response = await fetch('https://api.weather.bom.gov.au/v1/locations/Melbourne/forecasts');
+            const data = await response.json();
+            const currentWeather = data.forecasts[0].forecasts[0]; // Current day's forecast
+            const currentTemp = currentWeather.airTemperature; // Current temperature
+            const chanceOfRain = currentWeather.probabilityOfPrecipitation; // Chance of rain
+
+            document.getElementById('weather-info').innerText = `Temperature: ${currentTemp}°C, Chance of Rain: ${chanceOfRain}%`;
+
+            if (currentTemp > 15 && chanceOfRain < 20) {
+                document.getElementById('clothing-suggestion').innerText = "It's a great day for biking! Wear something light.";
+            } else {
+                document.getElementById('clothing-suggestion').innerText = "Maybe choose a warmer jacket or rain gear.";
+            }
+        }
+
+        // Function to pick a random color
+        function pickColor() {
+            const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+            document.getElementById('color-display').style.backgroundColor = randomColor;
+            document.getElementById('color-display').innerText = randomColor; // Show the color code
+        }
+
+        document.getElementById('color-button').onclick = pickColor;
+
+        // Fetch weather data when the page loads
+        getWeather();
+    </script>
+</body>
+</html>
